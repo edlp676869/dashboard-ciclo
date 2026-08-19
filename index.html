@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Ciclo — Resumen Ejecutivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1521;
+    --panel:#151E30;
+    --panel-2:#1B2538;
+    --line:#2A3550;
+    --gold:#C9A15E;
+    --sage:#8FB996;
+    --rust:#C1614A;
+    --warn:#E0A247;
+    --text:#EDEAE0;
+    --muted:#93A0B8;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(201,161,94,0.07), transparent 60%),
+      var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px 100px;}
+
+  /* ---- Header / hero ---- */
+  header.hero{
+    padding:56px 0 44px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:48px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(32px,5vw,52px);
+    line-height:1.08;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+  .hero-sub{
+    color:var(--muted);
+    font-size:16px;
+    max-width:560px;
+    margin:0 0 40px;
+  }
+
+  .verdict-row{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:40px;
+    align-items:center;
+  }
+  @media (max-width:640px){ .verdict-row{grid-template-columns:1fr;} }
+
+  .gauge-wrap{position:relative;width:200px;height:200px;}
+  .gauge-label{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+  }
+  .gauge-num{font-family:'Fraunces',serif;font-size:38px;font-weight:600;color:var(--sage);}
+  .gauge-den{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px;}
+
+  .verdict-text .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    color:var(--sage);
+    border:1px solid rgba(143,185,150,0.4);
+    padding:4px 10px;
+    border-radius:var(--radius);
+    margin-bottom:14px;
+  }
+  .verdict-text h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 10px;
+  }
+  .verdict-text p{color:var(--muted);margin:0;max-width:520px;font-size:15px;}
+
+  /* ---- Wave signature ---- */
+  .wave-band{margin-top:36px;}
+  svg.wave{width:100%;height:auto;display:block;}
+  .wave-path{fill:none;stroke:var(--line);stroke-width:1.5;}
+  .wave-fill{fill:url(#waveGrad);opacity:.5;}
+  .wave-dot{fill:var(--gold);}
+  .wave-caption{
+    display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--muted);
+    margin-top:6px;letter-spacing:.03em;
+  }
+
+  /* ---- Section titles ---- */
+  .section-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 22px;
+    padding-top:6px;
+    border-top:1px solid var(--line);
+  }
+  section{margin-bottom:56px;}
+
+  /* ---- Card grid (resumen ejecutivo) ---- */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:720px){ .card-grid{grid-template-columns:1fr;} }
+  .card{
+    background:var(--panel);
+    padding:26px 24px;
+  }
+  .card .q{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    font-weight:600;
+    margin:0 0 10px;
+  }
+  .card .why{
+    color:var(--muted);
+    font-size:13px;
+    margin:0 0 16px;
+  }
+  .card .answer{
+    font-size:14.5px;
+    padding:12px 14px;
+    border-left:2px solid var(--gold);
+    background:rgba(201,161,94,0.06);
+    margin:0 0 12px;
+  }
+  .card .answer.warn{border-left-color:var(--warn); background:rgba(224,162,71,.08);}
+  .card .answer.ok{border-left-color:var(--sage); background:rgba(143,185,150,.08);}
+  .card .plain{
+    font-size:13.5px;
+    color:var(--text);
+    margin:0 0 14px;
+    padding-left:2px;
+  }
+  .card .plain b{color:var(--gold);font-weight:600;}
+  .card a.goto{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--gold);
+    text-decoration:none;
+    letter-spacing:.03em;
+  }
+  .card a.goto:hover{text-decoration:underline;}
+
+  /* ---- Signal breakdown table ---- */
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .pill{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    padding:2px 8px;border-radius:20px;
+  }
+  .pill.ok{background:rgba(143,185,150,.15);color:var(--sage);}
+  .pill.warn{background:rgba(224,162,71,.15);color:var(--warn);}
+  .pill.bad{background:rgba(193,97,74,.15);color:var(--rust);}
+  .num-cell{font-family:'IBM Plex Mono',monospace;text-align:right;color:var(--muted);}
+
+  /* ---- Two-col mini panels (valuación / sentimiento) ---- */
+  .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media (max-width:720px){ .mini-grid{grid-template-columns:1fr;} }
+  .mini-panel{background:var(--panel);padding:24px;}
+  .mini-panel h3{font-family:'Fraunces',serif;font-size:17px;margin:0 0 14px;font-weight:600;}
+  .stat-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .v{font-family:'IBM Plex Mono',monospace;color:var(--text);}
+
+  /* ---- Scenarios ---- */
+  .scenario{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    padding:20px 22px;
+    margin-bottom:1px;
+  }
+  .scenario.risk{border-left-color:var(--warn);}
+  .scenario-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;}
+  .scenario-head h4{font-family:'Fraunces',serif;font-size:16.5px;margin:0;font-weight:600;}
+  .scenario-prob{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold);}
+  .scenario p{color:var(--muted);font-size:13.5px;margin:8px 0 0;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-top:24px;
+    color:var(--muted);
+    font-size:12.5px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  footer .disclaimer{max-width:640px;}
+
+  .refresh-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    background:var(--panel-2);
+    border:1px solid var(--gold);
+    color:var(--gold);
+    padding:8px 16px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .refresh-btn:hover{background:rgba(201,161,94,0.12);}
+  .refresh-btn:disabled{opacity:.5;cursor:default;}
+  .refresh-row{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap;}
+  .refresh-status{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);}
+
+  @media (prefers-reduced-motion: reduce){
+    * {animation:none !important; transition:none !important;}
+  }
+  .pulse{animation:pulse 2.6s ease-in-out infinite;}
+  @keyframes pulse{
+    0%,100%{opacity:1; r:5;}
+    50%{opacity:.55; r:7;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Sistema de detección de ciclo &amp; asignación sectorial</p>
+    <h1>¿Qué tan cerca estamos<br>de un cambio de ciclo?</h1>
+    <p class="hero-sub">Panorama de una sola pantalla, con siete señales independientes detrás de cada número. Nada de esto es asesoramiento financiero.</p>
+
+    <div class="verdict-row">
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 200 200" width="200" height="200">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#2A3550" stroke-width="10"/>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#8FB996" stroke-width="10"
+                  stroke-linecap="round" stroke-dasharray="552.9" stroke-dashoffset="442.3"
+                  transform="rotate(-90 100 100)"/>
+        </svg>
+        <div class="gauge-label">
+          <div class="gauge-num" id="gaugeNum">3</div>
+          <div class="gauge-den" id="gaugeDen">de 15 puntos</div>
+        </div>
+      </div>
+      <div class="verdict-text">
+        <span class="tag" id="verdictTag">● LEJOS</span>
+        <h2 id="verdictHeadline">Economía y mercado en expansión, sin señales de alerta cruzadas.</h2>
+        <p id="verdictDetail">Siete fuentes independientes —NY Fed, Regla de Sahm, PMI global, Registro Histórico, política de la Fed, veredicto de las 3 D's, y confirmación de sectores— coinciden hoy en que no hay evidencia de un giro de ciclo inminente.</p>
+        <p style="color:var(--text);font-size:14px;margin-top:14px;max-width:520px;"><b style="color:var(--gold);">En criollo:</b> ni la economía real ni el mercado muestran grietas serias hoy. No es momento de pánico ni de cambiar drásticamente la estrategia — pero tampoco de confiarse del todo, porque el mercado está caro (ver abajo) y con mucho apalancamiento, justo cuando entra a los 2 meses del año que históricamente más se sacuden.</p>
+      </div>
+    </div>
+
+    <div class="wave-band">
+      <svg class="wave" viewBox="0 0 1000 140" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C9A15E" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#C9A15E" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path class="wave-fill" d="M0,90 C120,20 230,20 350,70 C470,120 580,120 700,60 C820,10 900,10 1000,50 L1000,140 L0,140 Z"/>
+        <path class="wave-path" d="M0,90 C120,20 230,20 350,70 C470,120 580,120 700,60 C820,10 900,10 1000,50"/>
+        <circle class="wave-dot pulse" cx="330" cy="73" r="5"/>
+      </svg>
+      <div class="wave-caption">
+        <span>Recesión '25</span>
+        <span style="color:#C9A15E;">▲ estamos acá — mid-cycle, expansión</span>
+        <span>¿Próximo giro?</span>
+      </div>
+    </div>
+    <div class="refresh-row">
+      <button class="refresh-btn" id="askBtn" onclick="showAskText()" style="border-color:var(--sage);color:var(--sage);">↗ Mostrar el pedido para copiar</button>
+      <span class="refresh-status" id="refreshStatus">Datos de este archivo: 18-ago-2026. Para ver datos más nuevos, pedile a Claude una versión actualizada — no hay botón que los traiga automáticamente.</span>
+    </div>
+    <textarea id="askTextArea" readonly rows="2" style="display:none;width:100%;margin-top:12px;background:var(--panel-2);color:var(--text);border:1px solid var(--gold);border-radius:2px;padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;"></textarea>
+  </header>
+
+  <!-- ============ RESUMEN EJECUTIVO ============ -->
+  <section id="resumen">
+    <p class="section-title">01 — Resumen ejecutivo</p>
+    <div class="card-grid">
+
+      <div class="card">
+        <p class="q">¿El mercado está caro?</p>
+        <p class="why">"Caro" y "buen momento económico" son cosas distintas — se puede estar en expansión y pagando de más al mismo tiempo.</p>
+        <p class="answer warn">Valuación históricamente estirada. CAPE 41.0x — solo estuvo más alto en 1999-2000.</p>
+        <p class="plain"><b>En criollo:</b> sí, está caro. Es el segundo nivel más alto de toda la historia del mercado — solo lo superó la burbuja punto-com justo antes de estallar. No significa que vaya a caer mañana, pero comprar hoy implica pagar una prima alta por lo que se espera del futuro, no un precio de ganga.</p>
+        <a class="goto" href="#valuacion">Ver detalle ↓</a>
+      </div>
+
+      <div class="card">
+        <p class="q">¿Hay señales de euforia o riesgo de corrección?</p>
+        <p class="why">Distinto de la valuación: mide si hay demasiado apalancamiento o complacencia sosteniendo los precios.</p>
+        <p class="answer warn">Margin Debt / PIB en récord histórico (4.0%). El VIX tocó 14.2 (mínimo de 2026) justo al entrar a la ventana estacional históricamente más volátil (mid-ago a mid-oct).</p>
+        <p class="plain"><b>En criollo:</b> mucha gente está pidiendo plata prestada para comprar más acciones de las que podría pagar de su bolsillo — nivel récord — y al mismo tiempo casi nadie está pagando por 'seguro' contra una caída (el VIX bajo es eso: poca demanda de cobertura). Es como manejar rápido y sin cinturón justo antes de entrar a la parte del año que históricamente tiene más pozos en el camino.</p>
+        <a class="goto" href="#sentimiento">Ver detalle ↓</a>
+      </div>
+
+      <div class="card">
+        <p class="q">¿Qué sub-industrias se activan y cuáles caen?</p>
+        <p class="why">La confirmación de mercado más temprana: el dinero puede moverse antes de que el dato macro lo confirme.</p>
+        <p class="answer ok">Activándose: Semiconductores/IA, Biotecnología. Cayendo: Eléctricas reguladas clásicas.</p>
+        <p class="plain"><b>En criollo:</b> el dinero sigue entrando con fuerza a las apuestas de inteligencia artificial (chips, biotecnología) — no es algo nuevo, lleva meses así y no da señales de frenar. Y está saliendo de las eléctricas más tradicionales, probablemente porque dependen de tasas de interés bajas para ser atractivas, y la Fed dejó de bajarlas.</p>
+        <a class="goto" href="#subindustrias">Ver detalle ↓</a>
+      </div>
+
+      <div class="card">
+        <p class="q">¿Cuál es el escenario más probable?</p>
+        <p class="why">Convierte el análisis en decisión: qué haría en cada caso, definido antes de que ocurra.</p>
+        <p class="answer ok">A. Continúa el ciclo actual (caso base) — probabilidad ~55-60%.</p>
+        <p class="plain"><b>En criollo:</b> lo más probable, un poco más de la mitad de las chances, es que nada grande cambie y todo siga como está. Pero hay casi 1 de cada 3 posibilidades de que la Fed termine subiendo la tasa de interés por el precio de la energía — ese es el riesgo concreto más cercano a vigilar, no una recesión.</p>
+        <a class="goto" href="#escenarios">Ver detalle ↓</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ LAS 7 SEÑALES ============ -->
+  <section id="senales">
+    <p class="section-title">02 — Las 7 señales del veredicto de ciclo</p>
+    <table>
+      <thead><tr><th>Señal</th><th>Estado</th><th class="num-cell">Puntos</th></tr></thead>
+      <tbody>
+        <tr><td>Probabilidad de recesión — modelo NY Fed</td><td><span class="pill ok">12.9% · bajo</span></td><td class="num-cell">0</td></tr>
+        <tr><td>Regla de Sahm</td><td><span class="pill ok">-0.03 · normal</span></td><td class="num-cell">0</td></tr>
+        <tr><td>PMI global — economías en contracción</td><td><span class="pill ok">0 de 3</span></td><td class="num-cell">0</td></tr>
+        <tr><td>Registro Histórico acumulado (6 alertas incluidas)</td><td><span class="pill warn">1 alerta activa</span></td><td class="num-cell">1</td></tr>
+        <tr><td>Fase de política de la Fed</td><td><span class="pill warn">Pausa, riesgo de suba</span></td><td class="num-cell">1</td></tr>
+        <tr><td>Veredicto 3 D's — growth scare vs. recesión</td><td><span class="pill ok">Growth scare, no recesión</span></td><td class="num-cell">0</td></tr>
+        <tr><td>Confirmación de mercado — sectores que confirman</td><td><span class="pill warn">2 de 3</span></td><td class="num-cell">1</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text);font-size:13.5px;margin-top:16px;max-width:720px;"><b style="color:var(--gold);">En criollo, señal por señal:</b> el modelo de la Fed de Nueva York le pone solo 13% de chance a una recesión en el próximo año (bajo). El desempleo no está subiendo de forma preocupante (Sahm). Ninguna de las 3 economías grandes del mundo está en contracción (PMI). Hay 1 alerta prendida de 6 posibles en el registro histórico — no es nada, pero tampoco cero. La Fed dejó de bajar tasas y hay chance de que las suba (el punto más flojo del combo). El indicador de "susto vs. recesión real" del Conference Board dice que lo que hay hoy es un susto pasajero, no el inicio de algo grave. Y 2 de los 3 sectores que "deberían" liderar ahora mismo, efectivamente lideran — el tercero (Comunicaciones) se quedó atrás.</p>
+    </section>
+
+  <!-- ============ VALUACIÓN + SENTIMIENTO ============ -->
+  <section>
+    <p class="section-title">03 — Valuación &amp; sentimiento</p>
+    <div class="mini-grid">
+      <div class="mini-panel" id="valuacion">
+        <h3>Valuación de mercado</h3>
+        <div class="stat-row"><span>Shiller CAPE</span><span class="v">41.0x</span></div>
+        <div class="stat-row"><span>P/E adelantado S&amp;P 500</span><span class="v">23.0x</span></div>
+        <div class="stat-row"><span>P/E trailing S&amp;P 500</span><span class="v">25.5x</span></div>
+        <div class="stat-row"><span>Concentración top-10 S&amp;P 500</span><span class="v">36.4%</span></div>
+        <div class="stat-row"><span>Excess CAPE Yield</span><span class="v" style="color:var(--warn);">0.04% — muy comprimido</span></div>
+        <p style="color:var(--text);font-size:13px;margin:16px 0 0;"><b style="color:var(--gold);">En criollo:</b> las acciones apenas rinden más que un bono del Tesoro casi sin riesgo — casi no hay premio por el riesgo extra de tener acciones en vez de un bono. Concentración top-10 de 36.4% significa que más de un tercio del índice depende de 10 empresas — si una de ellas tropieza fuerte, arrastra a todo el mercado con ella.</p>
+      </div>
+      <div class="mini-panel" id="sentimiento">
+        <h3>Sentimiento &amp; posicionamiento</h3>
+        <div class="stat-row"><span>VIX (mínimo semanal)</span><span class="v">14.2 — mínimo de 2026</span></div>
+        <div class="stat-row"><span>VIX Term Structure (IVTS)</span><span class="v">0.906 — contango</span></div>
+        <div class="stat-row"><span>Margin Debt / PIB</span><span class="v" style="color:var(--warn);">4.0% — récord histórico</span></div>
+        <div class="stat-row"><span>Actividad de IPOs</span><span class="v" style="color:var(--warn);">Muy alta</span></div>
+        <div class="stat-row"><span>Estacionalidad</span><span class="v" style="color:var(--warn);">Entrando a ventana mid-ago/mid-oct, histórica más volátil</span></div>
+        <p style="color:var(--text);font-size:13px;margin:16px 0 0;"><b style="color:var(--gold);">En criollo:</b> el VIX bajo y en "contango" (curva normal) dice que hoy el mercado no está asustado — nadie paga de más por protegerse. El problema es que eso coincide con niveles récord de gente comprando acciones con plata prestada. Cuando eso se da junto y algo sorprende mal, las caídas suelen ser más bruscas, porque nadie estaba preparado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SUB-INDUSTRIAS ============ -->
+  <section id="subindustrias">
+    <p class="section-title">04 — Mapa de sub-industrias (datos duros)</p>
+    <table>
+      <thead><tr><th>Sub-industria</th><th>1M</th><th>1A</th><th>Estado</th><th>Tendencia (50d/200d)</th></tr></thead>
+      <tbody>
+        <tr><td>Semiconductores / hardware IA</td><td class="num-cell">+7.0%</td><td class="num-cell">+41.6%</td><td><span class="pill ok">Ya activo, acelerando</span></td><td><span class="pill ok">↑ Por encima</span></td></tr>
+        <tr><td>Farmacéuticas / Biotecnología (XBI)</td><td class="num-cell">+5.0%</td><td class="num-cell">+77.4%</td><td><span class="pill ok">Ya activo, acelerando</span></td><td><span class="pill ok">↑ Por encima</span></td></tr>
+        <tr><td>Defensa / Aeroespacial (ITA)</td><td class="num-cell">s/d</td><td class="num-cell">s/d</td><td><span class="pill warn">Sin dato de retorno</span></td><td><span class="pill ok">↑ Por encima</span></td></tr>
+        <tr><td>Mega-caps publicidad/IA (Meta, Alphabet)</td><td class="num-cell">+0.3%</td><td class="num-cell">+1.7%</td><td><span class="pill warn">Dejó de caer, sin confirmar giro</span></td><td><span class="pill warn">s/d</span></td></tr>
+        <tr><td>Alimenticias / bebidas</td><td class="num-cell">+0.3%</td><td class="num-cell">+4.2%</td><td><span class="pill warn">Dejó de caer, sin confirmar giro</span></td><td><span class="pill ok">↑ Cruzó al alza (24-jul)</span></td></tr>
+        <tr><td>Eléctricas reguladas clásicas</td><td class="num-cell">-2.6%</td><td class="num-cell">+2.5%</td><td><span class="pill bad">Cayendo</span></td><td><span class="pill bad">↓ Por debajo</span></td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text);font-size:13px;margin-top:14px;max-width:720px;"><b style="color:var(--gold);">En criollo:</b> de las sub-industrias que pudimos medir con dato duro, 3 muestran señales claras de estar ganando fuerza ahora mismo (semiconductores, biotecnología, defensa) — las tres ligadas a inversión en IA o gasto militar, no a un cambio de ciclo económico clásico. Solo 1 muestra señales claras de estar perdiendo fuerza (eléctricas reguladas). Alimenticias es el caso más ambiguo: el rendimiento del último mes es casi nulo (+0.3%, no alcanza para confirmar un giro), pero el precio ya cruzó por encima de su media de 50 días — dos formas distintas de medir lo mismo, que no se contradicen pero tampoco dicen exactamente lo mismo: una es cautelosa, la otra ya da por confirmado el cambio de tendencia.</p>
+    <p style="color:var(--muted);font-size:12px;margin-top:10px;max-width:720px;">5 de 11 sub-industrias con dato duro de tendencia; el resto queda pendiente de verificar (no significa que no exista, significa que todavía no lo busqué a fondo — ver regla de profundidad de búsqueda en el Excel).</p>
+  </section>
+
+  <!-- ============ ESCENARIOS ============ -->
+  <section id="escenarios">
+    <p class="section-title">05 — Tablero de escenarios (12 meses)</p>
+
+    <div class="scenario">
+      <div class="scenario-head"><h4>A. Continúa el ciclo actual</h4><span class="scenario-prob">~55–60%</span></div>
+      <p>Caso base. Gana: semiconductores/IA, tecnología, industriales ligados a IA. Acción: mantener exposición actual, sin cambios urgentes.</p>
+      <p style="color:var(--text);font-size:13px;margin-top:8px;"><b style="color:var(--gold);">En criollo:</b> lo más probable es que no tengas que hacer nada distinto de lo que ya venís haciendo.</p>
+    </div>
+    <div class="scenario risk">
+      <div class="scenario-head"><h4>B. Growth scare se profundiza a recesión</h4><span class="scenario-prob">~10–15%</span></div>
+      <p>Gana: salud, utilities reguladas, consumo básico. Acción: rotar gradualmente siguiendo la escalera de alertas del Registro Histórico.</p>
+      <p style="color:var(--text);font-size:13px;margin-top:8px;"><b style="color:var(--gold);">En criollo:</b> el susto actual se convierte en algo serio. Poco probable (1 de cada 7-10), pero si pasa, conviene ir moviéndose hacia lo defensivo de a poco, no de golpe.</p>
+    </div>
+    <div class="scenario risk">
+      <div class="scenario-head"><h4>C. La Fed sube tasas por inflación de energía</h4><span class="scenario-prob">~30–40%</span></div>
+      <p>Gana: energía, financieras. Pierde: REITs, utilities. Acción: pausar nueva exposición a REITs/Utilities hasta el FOMC de septiembre.</p>
+      <p style="color:var(--text);font-size:13px;margin-top:8px;"><b style="color:var(--gold);">En criollo:</b> es el riesgo más probable de los tres "malos" — casi 1 de cada 3. Si la Fed sube la tasa por el precio del petróleo, evitá sumar más plata a REITs o eléctricas hasta que se aclare en septiembre.</p>
+    </div>
+    <div class="scenario risk">
+      <div class="scenario-head"><h4>D. El capex de IA decepciona en resultados</h4><span class="scenario-prob">~15–20%</span></div>
+      <p>El más peligroso: golpearía a la mayoría de lo que hoy funciona bien, todo a la vez, por depender del mismo factor. Acción: revisar exposición antes de cada temporada de resultados.</p>
+      <p style="color:var(--text);font-size:13px;margin-top:8px;"><b style="color:var(--gold);">En criollo:</b> este es el que más vale la pena vigilar, aunque no sea el más probable — porque no golpea a un sector, golpea a casi todo lo que hoy va bien, al mismo tiempo, porque todo depende de la misma apuesta (IA).</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Última actualización: <strong style="color:var(--text)" id="lastUpdated">18-ago-2026</strong> · Próxima sugerida: primer viernes de septiembre 2026</span>
+    <span class="disclaimer">No es asesoramiento financiero. Sistema de research propio para tomar decisiones informadas — no una señal automática de comprar o vender. Ver el Excel completo para fuentes, metodología y cálculos detallados de cada cifra.</span>
+  </footer>
+
+</div>
+
+<script>
+  const DEFAULT_DATA = {
+    gaugeNum: '3',
+    gaugeDen: 'de 15 puntos',
+    verdictTag: '● LEJOS',
+    verdictHeadline: "Economía y mercado en expansión, sin señales de alerta cruzadas.",
+    verdictDetail: "Siete fuentes independientes —NY Fed, Regla de Sahm, PMI global, Registro Histórico, política de la Fed, veredicto de las 3 D's, y confirmación de sectores— coinciden hoy en que no hay evidencia de un giro de ciclo inminente. Único punto a vigilar: el VIX tocó mínimos de 2026 (14.2) justo al entrar a la ventana estacional más volátil del año.",
+    lastUpdated: '18-ago-2026'
+  };
+
+  function renderData(data){
+    document.getElementById('gaugeNum').textContent = data.gaugeNum;
+    document.getElementById('gaugeDen').textContent = data.gaugeDen;
+    document.getElementById('verdictTag').textContent = data.verdictTag;
+    document.getElementById('verdictHeadline').textContent = data.verdictHeadline;
+    document.getElementById('verdictDetail').textContent = data.verdictDetail;
+    document.getElementById('lastUpdated').textContent = data.lastUpdated;
+  }
+
+  renderData(DEFAULT_DATA);
+
+  function showAskText(){
+    const statusEl = document.getElementById('refreshStatus');
+    const prompt = "Actualizame el dashboard macro con los datos más recientes (Checklist Actualización) y guardá los nuevos valores en el almacenamiento del panel HTML (clave 'cycle-dashboard-latest').";
+
+    if (typeof sendPrompt === 'function') {
+      try {
+        sendPrompt(prompt);
+        statusEl.textContent = 'Pedido enviado directamente a Claude vía sendPrompt().';
+        return;
+      } catch (err) {
+        console.error('sendPrompt falló:', err);
+        statusEl.textContent = 'sendPrompt existe pero falló al ejecutar — mostrando el texto para copiar en su lugar.';
+      }
+    } else {
+      statusEl.textContent = 'sendPrompt no está disponible en este archivo — mostrando el texto para copiar.';
+    }
+
+    const box = document.getElementById('askTextArea');
+    box.value = prompt;
+    box.style.display = 'block';
+    box.focus();
+    box.select();
+  }
+
+  // (renderData ya se ejecutó arriba al definir DEFAULT_DATA)
+</script>
+</body>
+</html>
